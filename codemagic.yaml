@@ -1,0 +1,37 @@
+workflows:
+  ios_appstore:
+    name: iOS App Store (Flutter)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      vars:
+        BUNDLE_ID: "com.yourname.balance"   # поменяй на уникальный
+        APP_NAME: "Баланс"
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Apply metadata
+        script: |
+          cd ios
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" Runner/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleName $APP_NAME" Runner/Info.plist
+          cd ..
+      - name: Build IPA (release)
+        script: flutter build ipa --release
+    artifacts:
+      - build/ios/ipa/*.ipa
+    code_signing:
+      ios_signing:
+        distribution_type: app-store
+        bundle_identifier: $BUNDLE_ID
+        automatic_code_signing: true
+    publishing:
+      app_store_connect:
+        submit_to_testflight: true
+      email:
+        recipients:
+          - you@example.com   # замени на свой e-mail
+        notify:
+          success: true
+          failure: true
