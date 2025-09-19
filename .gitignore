@@ -1,0 +1,9 @@
+.dart_tool/
+.packages
+.pub-cache/
+build/
+ios/Pods/
+macos/Pods/
+**/DerivedData/
+.idea/
+.vscode/
